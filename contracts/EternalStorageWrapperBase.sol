@@ -3,7 +3,7 @@ pragma solidity ^0.5;
 import "./EternalStorage.sol";
 import "../../../OpenZeppelin/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract EternalStorageBase is Ownable {
+contract EternalStorageWrapperBase is Ownable {
 
     EternalStorage internal _eternalStorage;
 

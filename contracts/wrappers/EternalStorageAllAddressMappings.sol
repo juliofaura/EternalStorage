@@ -1,8 +1,8 @@
 pragma solidity ^0.5;
 
-import "./EternalStorageBase.sol";
+import "../EternalStorageWrapperBase.sol";
 
-contract EternalStorageAllAddressMappings is EternalStorageBase {
+contract EternalStorageAllAddressMappings is EternalStorageWrapperBase {
 
     // Get element:
     function getUintFromMapping(bytes32 _module, bytes32 _mapping, address _key)

@@ -1,8 +1,8 @@
 pragma solidity ^0.5;
 
-import "./EternalStorageBase.sol";
+import "../EternalStorageWrapperBase.sol";
 
-contract EternalStorageStringArray is EternalStorageBase {
+contract EternalStorageStringArray is EternalStorageWrapperBase {
 
     function pushStringToArray(bytes32 module, bytes32 array, string memory newValue)
         public

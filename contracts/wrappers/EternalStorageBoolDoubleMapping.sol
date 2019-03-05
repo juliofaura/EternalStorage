@@ -1,8 +1,8 @@
 pragma solidity ^0.5;
 
-import "./EternalStorageBase.sol";
+import "../EternalStorageWrapperBase.sol";
 
-contract EternalStorageBoolDoubleMapping is EternalStorageBase {
+contract EternalStorageBoolDoubleMapping is EternalStorageWrapperBase {
 
     // Get element:
     function getBoolFromDoubleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2)
