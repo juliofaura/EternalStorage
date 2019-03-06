@@ -1,16 +1,13 @@
 pragma solidity ^0.5;
 
+import "./Ownable.sol";
 import "./EternalStorage.sol";
-import "../../../OpenZeppelin/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 contract EternalStorageWrapperBase is Ownable {
 
     EternalStorage internal _eternalStorage;
 
     event EternalStorageSet(address oldEternalStorage, address newEternalStorage);
-
-    constructor () internal {
-    }
 
     modifier externalStorageSet() {
         require(isEternalStorageSet(), "Eternal Storage not set");
@@ -25,11 +22,12 @@ contract EternalStorageWrapperBase is Ownable {
         return _eternalStorage;
     }
 
-    function setEternalStorage(address newEternalStorage) public onlyOwner {
+    function setEternalStorage(address newEternalStorage) public onlyOwner returns (bool) {
         require(newEternalStorage != address(0), "Storage address cannot be zero");
+        require(EternalStorage(_eternalStorage).isContractConnected(address(this)), "Not authorized by EternalStorage");
         emit EternalStorageSet(address(_eternalStorage), newEternalStorage);
         _eternalStorage = EternalStorage(newEternalStorage);
-        require(isEternalStorageSet(), "Not authorized by EternalStorage");
+        return true;
     }
 
     // Indexing keys

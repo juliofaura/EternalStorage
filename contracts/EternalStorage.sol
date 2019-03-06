@@ -1,7 +1,6 @@
 pragma solidity ^0.5;
 
-import "../../../OpenZeppelin/openzeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../../../OpenZeppelin/openzeppelin-solidity/contracts/lifecycle/Pausable.sol";
+import "./Pausable.sol";
 
 /**
  * @title EternalStorage
@@ -12,22 +11,25 @@ import "../../../OpenZeppelin/openzeppelin-solidity/contracts/lifecycle/Pausable
  * in order to be able to write the storage. Only the owner can whitelist ("connect") and unwhitelist
  * ("disconnect") individual contracts.
  */
-contract EternalStorage is Pausable, Ownable {
+contract EternalStorage is Pausable {
+
+    // Data structures
 
     mapping (address => bool) private _connectedContracts;
+
+    mapping(address => mapping(bytes32 => uint256)) private _uIntStorage;
+    mapping(address => mapping(bytes32 => int256)) private _intStorage;
+    mapping(address => mapping(bytes32 => address)) private _addressStorage;
+    mapping(address => mapping(bytes32 => bytes)) private _bytesStorage;
+    mapping(address => mapping(bytes32 => bool)) private _boolStorage;
+    mapping(address => mapping(bytes32 => string)) private _stringStorage;
+
+    // Events
 
     event ContractConnected(address whichContract);
     event ContractDisconnected(address whichContract);
 
-    mapping(bytes32 => uint256) private _uIntStorage;
-    mapping(bytes32 => int256) private _intStorage;
-    mapping(bytes32 => address) private _addressStorage;
-    mapping(bytes32 => bytes) private _bytesStorage;
-    mapping(bytes32 => bool) private _boolStorage;
-    mapping(bytes32 => string) private _stringStorage;
-
-    constructor() public {
-    }
+    // Modifiers
 
     /**
      * @dev Throws if called by any account other than the _userContract.
@@ -36,6 +38,8 @@ contract EternalStorage is Pausable, Ownable {
         require(_connectedContracts[msg.sender], "Calling contract not connected");
         _;
     }
+
+    // Interface functions (all external)
 
     /**
      * @notice Returns whether a particular contract is whitelisted ("connected") to be able to
@@ -76,7 +80,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getUint(bytes32 _key) external view onlyConnectedContract returns(uint256) {
-        return _uIntStorage[_key];
+        return _uIntStorage[msg.sender][_key];
     }
 
     /**
@@ -84,7 +88,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setUint(bytes32 _key, uint _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _uIntStorage[_key] = _value;
+        _uIntStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -93,7 +97,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteUint(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _uIntStorage[_key];
+        delete _uIntStorage[msg.sender][_key];
         return true;
     }
 
@@ -104,7 +108,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getInt(bytes32 _key) external view onlyConnectedContract returns(int256) {
-        return _intStorage[_key];
+        return _intStorage[msg.sender][_key];
     }
 
     /**
@@ -112,7 +116,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setInt(bytes32 _key, int256 _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _intStorage[_key] = _value;
+        _intStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -121,7 +125,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteInt(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _intStorage[_key];
+        delete _intStorage[msg.sender][_key];
         return true;
     }
 
@@ -132,7 +136,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getAddress(bytes32 _key) external view onlyConnectedContract returns(address) {
-        return _addressStorage[_key];
+        return _addressStorage[msg.sender][_key];
     }
 
     /**
@@ -140,7 +144,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setAddress(bytes32 _key, address _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _addressStorage[_key] = _value;
+        _addressStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -149,7 +153,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteAddress(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _addressStorage[_key];
+        delete _addressStorage[msg.sender][_key];
         return true;
     }
 
@@ -160,7 +164,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getBytes(bytes32 _key) external view onlyConnectedContract returns(bytes memory) {
-        return _bytesStorage[_key];
+        return _bytesStorage[msg.sender][_key];
     }
 
     /**
@@ -168,7 +172,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setBytes(bytes32 _key, bytes calldata _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _bytesStorage[_key] = _value;
+        _bytesStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -177,7 +181,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteBytes(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _bytesStorage[_key];
+        delete _bytesStorage[msg.sender][_key];
         return true;
     }
 
@@ -188,7 +192,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getBool(bytes32 _key) external view onlyConnectedContract returns(bool) {
-        return _boolStorage[_key];
+        return _boolStorage[msg.sender][_key];
     }
 
     /**
@@ -196,7 +200,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setBool(bytes32 _key, bool _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _boolStorage[_key] = _value;
+        _boolStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -205,7 +209,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteBool(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _boolStorage[_key];
+        delete _boolStorage[msg.sender][_key];
         return true;
     }
 
@@ -216,7 +220,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function getString(bytes32 _key) external view onlyConnectedContract returns(string memory) {
-        return _stringStorage[_key];
+        return _stringStorage[msg.sender][_key];
     }
 
     /**
@@ -224,7 +228,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function setString(bytes32 _key, string calldata _value) external onlyConnectedContract whenNotPaused returns (bool) {
-        _stringStorage[_key] = _value;
+        _stringStorage[msg.sender][_key] = _value;
         return true;
     }
 
@@ -233,7 +237,7 @@ contract EternalStorage is Pausable, Ownable {
      * @param _key The key that indexes the value
      */
     function deleteString(bytes32 _key) external onlyConnectedContract whenNotPaused returns (bool) {
-        delete _stringStorage[_key];
+        delete _stringStorage[msg.sender][_key];
         return true;
     }
 
