@@ -55,6 +55,10 @@ contract EternalStorageWrapperBase is Ownable {
         return keccak256(abi.encodePacked(module, arrayName, _key1, _key2));
     }
 
+    function doubleIndexedElementKey(bytes32 module, bytes32 arrayName, address _key1, string memory _key2) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, arrayName, _key1, _key2));
+    }
+
     // Array helper
     function getNumberOfElementsInArray(bytes32 module, bytes32 array)
         public view
