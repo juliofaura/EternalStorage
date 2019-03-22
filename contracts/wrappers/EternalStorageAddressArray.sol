@@ -1,47 +1,60 @@
 pragma solidity ^0.5;
 
 import "../EternalStorageWrapperBase.sol";
+import "../interfaces/IEternalStorageAddressArray.sol";
 
-contract EternalStorageAddressArray is EternalStorageWrapperBase {
+contract EternalStorageAddressArray is IEternalStorageAddressArray, EternalStorageWrapperBase {
 
     function pushAddressToArray(bytes32 module, bytes32 array, address newValue)
-        public
-        externalStorageSet
+        external
         returns (bool)
     {
-        setUint(module, array, getUint(module, array) + 1);
-        return setAddressInArray(module, array, getNumberOfElementsInArray(module, array) - 1, newValue);
+        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)) + 1);
+        return _setAddressInArray(module, array, _getNumberOfElementsInArray(module, array) - 1, newValue);
     }
 
     function getAddressFromArray(bytes32 module, bytes32 array, uint256 element)
-        public view
-        externalStorageSet
+        external view
         returns (address)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        bytes32 key = indexedElementKey(module, array, element);
-        return _eternalStorage.getAddress(key);
+        return _getAddressFromArray(module, array, element);
     }
 
     function setAddressInArray(bytes32 module, bytes32 array, uint256 element, address value)
-        public
-        externalStorageSet
+        external
         returns (bool)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        bytes32 key = indexedElementKey(module, array, element);
-        return _eternalStorage.setAddress(key, value);
+        return _setAddressInArray(module, array, element, value);
     }
 
     function deleteAddressFromArray(bytes32 module, bytes32 array, uint256 element)
-        public
-        externalStorageSet
+        external
         returns (bool)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        setAddressInArray(module, array, element, getAddressFromArray(module, array, getNumberOfElementsInArray(module, array) - 1));
-        bytes32 key = indexedElementKey(module, array, getNumberOfElementsInArray(module, array) - 1);
-        return _eternalStorage.deleteAddress(key);
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        _setAddressInArray(module, array, element, _getAddressFromArray(module, array, _getNumberOfElementsInArray(module, array) - 1));
+        bytes32 key = indexedElementKey(module, array, _getNumberOfElementsInArray(module, array) - 1);
+        return deleteAddress(key);
+    }
+
+    // Pricate functions
+
+    function _getAddressFromArray(bytes32 module, bytes32 array, uint256 element)
+        private view
+        returns (address)
+    {
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        bytes32 key = indexedElementKey(module, array, element);
+        return getAddress(key);
+    }
+
+    function _setAddressInArray(bytes32 module, bytes32 array, uint256 element, address value)
+        private
+        returns (bool)
+    {
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        bytes32 key = indexedElementKey(module, array, element);
+        return setAddress(key, value);
     }
 
 }

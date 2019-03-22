@@ -1,47 +1,60 @@
 pragma solidity ^0.5;
 
 import "../EternalStorageWrapperBase.sol";
+import "../interfaces/IEternalStorageUintArray.sol";
 
-contract EternalStorageUintArray is EternalStorageWrapperBase {
+contract EternalStorageUintArray is IEternalStorageUintArray, EternalStorageWrapperBase {
 
     function pushUintToArray(bytes32 module, bytes32 array, uint256 newValue)
-        public
-        externalStorageSet
+        external
         returns (bool)
     {
-        setUint(module, array, getUint(module, array) + 1);
-        return setUintInArray(module, array, getNumberOfElementsInArray(module, array) - 1, newValue);
+        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)) + 1);
+        return _setUintInArray(module, array, _getNumberOfElementsInArray(module, array) - 1, newValue);
     }
 
     function getUintFromArray(bytes32 module, bytes32 array, uint256 element)
-        public view
-        externalStorageSet
+        external view
         returns (uint)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        bytes32 key = indexedElementKey(module, array, element);
-        return _eternalStorage.getUint(key);
+        return _getUintFromArray(module, array, element);
     }
 
     function setUintInArray(bytes32 module, bytes32 array, uint256 element, uint256 value)
-        public
-        externalStorageSet
+        external
         returns (bool)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        bytes32 key = indexedElementKey(module, array, element);
-        return _eternalStorage.setUint(key, value);
+        return _setUintInArray(module, array, element, value);
     }
 
     function deleteUintFromArray(bytes32 module, bytes32 array, uint256 element)
-        public
-        externalStorageSet
+        external
        returns (bool)
     {
-        require(element < getNumberOfElementsInArray(module, array), "Array out of bounds");
-        setUintInArray(module, array, element, getUintFromArray(module, array, getNumberOfElementsInArray(module, array) - 1));
-        bytes32 key = indexedElementKey(module, array, getNumberOfElementsInArray(module, array) - 1);
-        return _eternalStorage.deleteUint(key);
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        _setUintInArray(module, array, element, _getUintFromArray(module, array, _getNumberOfElementsInArray(module, array) - 1));
+        bytes32 key = indexedElementKey(module, array, _getNumberOfElementsInArray(module, array) - 1);
+        return deleteUint(key);
+    }
+
+    // Private functions
+
+    function _getUintFromArray(bytes32 module, bytes32 array, uint256 element)
+        private view
+        returns (uint)
+    {
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        bytes32 key = indexedElementKey(module, array, element);
+        return getUint(key);
+    }
+
+    function _setUintInArray(bytes32 module, bytes32 array, uint256 element, uint256 value)
+        private
+        returns (bool)
+    {
+        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
+        bytes32 key = indexedElementKey(module, array, element);
+        return setUint(key, value);
     }
 
 }

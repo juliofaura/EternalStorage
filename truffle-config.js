@@ -80,9 +80,10 @@ module.exports = {
       // production: true    // Treats this network as if it was a public net. (default: false)
     // }
     development: {
-        host: "127.0.0.1",
+        host: "10.211.55.4",
+//	host: "127.0.0.1",
         port: 8545,
-        gas: 10000000,
+        gas: 50000000,
         gasPrice: 0,
         network_id: "*" // Match any network id
     }

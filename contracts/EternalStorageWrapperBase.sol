@@ -1,245 +1,223 @@
 pragma solidity ^0.5;
 
 import "./Ownable.sol";
-import "./EternalStorage.sol";
+import "./EternalStorageBase.sol";
 
-contract EternalStorageWrapperBase is Ownable {
+contract EternalStorageWrapperBase is EternalStorageBase {
 
-    EternalStorage internal _eternalStorage;
+    string constant OUT_OF_BOUNDS = "Array out of bounds";
 
-    event EternalStorageSet(address oldEternalStorage, address newEternalStorage);
-
-    modifier externalStorageSet() {
-        require(isEternalStorageSet(), "Eternal Storage not set");
-        _;
-    }
-
-    function isEternalStorageSet() public view returns(bool) {
-        return _eternalStorage.isContractConnected(address(this));
-    }
-
-    function whichEternalStorage() public view returns(EternalStorage) {
-        return _eternalStorage;
-    }
-
-    function setEternalStorage(address newEternalStorage) public onlyOwner returns (bool) {
-        require(newEternalStorage != address(0), "Storage address cannot be zero");
-        require(EternalStorage(_eternalStorage).isContractConnected(address(this)), "Not authorized by EternalStorage");
-        emit EternalStorageSet(address(_eternalStorage), newEternalStorage);
-        _eternalStorage = EternalStorage(newEternalStorage);
-        return true;
+    function getNumberOfElementsInArray(bytes32 module, bytes32 array)
+        external view
+        returns (uint256) {
+        return _getNumberOfElementsInArray(module, array);
     }
 
     // Indexing keys
-    function singleElementKey(bytes32 module, bytes32 variableName) public pure returns (bytes32) {
+    function singleElementKey(bytes32 module, bytes32 variableName) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(module, variableName));
     }
 
-    function indexedElementKey(bytes32 module, bytes32 arrayName, uint256 index) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, index));
+    function indexedElementKey(bytes32 module, bytes32 variableName, uint256 index) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, index));
     }
 
-    function indexedElementKey(bytes32 module, bytes32 arrayName, address _key) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, _key));
+    function indexedElementKey(bytes32 module, bytes32 variableName, address _key) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, _key));
     }
 
-    function indexedElementKey(bytes32 module, bytes32 arrayName, string memory _key) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, _key));
+    function indexedElementKey(bytes32 module, bytes32 variableName, string memory _key) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, _key));
     }
 
-    function doubleIndexedElementKey(bytes32 module, bytes32 arrayName, bytes32 _key1, address _key2) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, _key1, _key2));
+    function doubleIndexedElementKey(bytes32 module, bytes32 variableName, bytes32 _key1, address _key2) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
     }
 
-    function doubleIndexedElementKey(bytes32 module, bytes32 arrayName, address _key1, address _key2) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, _key1, _key2));
+    function doubleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, address _key2) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
     }
 
-    function doubleIndexedElementKey(bytes32 module, bytes32 arrayName, address _key1, string memory _key2) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, arrayName, _key1, _key2));
+    function doubleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, string memory _key2) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
+    }
+
+    function tripleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, bytes32 _key2, uint256 _key3)
+        internal pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(module, variableName, _key1, _key2, _key3));
+    }
+
+    function tripleIndexedElementKey(bytes32 module, bytes32 variableName, bytes32 _key1, address _key2, address _key3)
+        internal pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(module, variableName, _key1, _key2, _key3));
     }
 
     // Array helper
-    function getNumberOfElementsInArray(bytes32 module, bytes32 array)
-        public view
-        externalStorageSet
+    function _getNumberOfElementsInArray(bytes32 module, bytes32 array)
+        internal view
         returns (uint256) {
         bytes32 key = singleElementKey(module, array);
-        return _eternalStorage.getUint(key);
+        return getUint(key);
     }
 
     // uint256
 
     function getUint(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (uint)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getUint(key);
+        return getUint(key);
     }
 
     function setUint(bytes32 module, bytes32 variable, uint256 value)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setUint(key, value);
+        return setUint(key, value);
     }
 
     function deleteUint(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteUint(key);
+        return deleteUint(key);
     }
 
     // int256
 
     function getInt(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (int)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getInt(key);
+        return getInt(key);
     }
 
     function setInt(bytes32 module, bytes32 variable, int256 value)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setInt(key, value);
+        return setInt(key, value);
     }
 
     function deleteInt(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteInt(key);
+        return deleteInt(key);
     }
 
     // address
 
     function getAddress(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (address)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getAddress(key);
+        return getAddress(key);
     }
 
     function setAddress(bytes32 module, bytes32 variable, address value)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setAddress(key, value);
+        return setAddress(key, value);
     }
 
     function deleteAddress(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteAddress(key);
+        return deleteAddress(key);
     }
 
     // bytes
 
     function getBytes(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (bytes memory)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getBytes(key);
+        return getBytes(key);
     }
 
-    function setBytes(bytes32 module, bytes32 variable, bytes memory value)
-        public
-        externalStorageSet
+    function setBytes(bytes32 module, bytes32 variable, bytes calldata value)
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setBytes(key, value);
+        return setBytes(key, value);
     }
 
     function deleteBytes(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteBytes(key);
+        return deleteBytes(key);
     }
 
     // bool
 
     function getBool(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getBool(key);
+        return getBool(key);
     }
 
     function setBool(bytes32 module, bytes32 variable, bool value)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setBool(key, value);
+        return setBool(key, value);
     }
 
     function deleteBool(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteBool(key);
+        return deleteBool(key);
     }
 
     // string
 
     function getString(bytes32 module, bytes32 variable)
-        public view
-        externalStorageSet
+        external view
         returns (string memory)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.getString(key);
+        return getString(key);
     }
 
-    function setString(bytes32 module, bytes32 variable, string memory value)
-        public
-        externalStorageSet
+    function setString(bytes32 module, bytes32 variable, string calldata value)
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.setString(key, value);
+        return setString(key, value);
     }
 
     function deleteString(bytes32 module, bytes32 variable)
-        public
-        externalStorageSet
+        external
         returns(bool)
     {
         bytes32 key = singleElementKey(module, variable);
-        return _eternalStorage.deleteString(key);
+        return deleteString(key);
     }
 
 }
