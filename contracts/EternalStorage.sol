@@ -8,6 +8,7 @@ import "./wrappers/EternalStorageAllAddressMappings.sol";
 import "./wrappers/EternalStorageAllStringMappings.sol";
 import "./wrappers/EternalStorageBoolDoubleMapping.sol";
 import "./wrappers/EternalStorageUintDoubleMapping.sol";
+import "./wrappers/EternalStorageUintTripleMapping.sol";
 
 /**
  * @title EternalStorage
@@ -26,6 +27,7 @@ contract EternalStorage is
     EternalStorageAllAddressMappings,
     EternalStorageAllStringMappings,
     EternalStorageBoolDoubleMapping,
-    EternalStorageUintDoubleMapping
+    EternalStorageUintDoubleMapping,
+    EternalStorageUintTripleMapping
 {
 }

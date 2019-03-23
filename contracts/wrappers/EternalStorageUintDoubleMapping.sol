@@ -6,7 +6,7 @@ import "../interfaces/IEternalStorageUintDoubleMapping.sol";
 contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, EternalStorageWrapperBase {
 
     // Get element:
-    function getUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2)
+    function getUintFromDoubleBytes32AddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2)
         external view
         returns (uint256)
     {
@@ -14,7 +14,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return getUint(key);
     }
 
-    function getUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2)
+    function getUintFromDoubleAddressAddressMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2)
         external view
         returns (uint256)
     {
@@ -22,7 +22,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return getUint(key);
     }
 
-    function getUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
+    function getUintFromDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
         external view
         returns (uint256)
     {
@@ -32,7 +32,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
 
     // Set element:
 
-    function setUintInDoubleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, uint256 _value)
+    function setUintInDoubleBytes32AddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, uint256 _value)
         external
         returns (bool)
     {
@@ -40,7 +40,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return setUint(key, _value);
     }
 
-    function setUintInDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2, uint256 _value)
+    function setUintInDoubleAddressAddressMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2, uint256 _value)
         external
         returns (bool)
     {
@@ -48,7 +48,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return setUint(key, _value);
     }
 
-    function setUintInDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2, uint256 _value)
+    function setUintInDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2, uint256 _value)
         external
         returns (bool)
     {
@@ -58,7 +58,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
 
     // Delete element
 
-    function deleteUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2)
+    function deleteUintFromDoubleBytes32AddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2)
         external
         returns (bool)
     {
@@ -66,7 +66,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return deleteUint(key);
     }
 
-    function deleteUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2)
+    function deleteUintFromDoubleAddressAddressMapping(bytes32 _module, bytes32 _mapping, address _key1, address _key2)
         external
         returns (bool)
     {
@@ -74,7 +74,7 @@ contract EternalStorageUintDoubleMapping is IEternalStorageUintDoubleMapping, Et
         return deleteUint(key);
     }
 
-    function deleteUintFromDoubleMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
+    function deleteUintFromDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
         external
         returns (bool)
     {

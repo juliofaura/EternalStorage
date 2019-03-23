@@ -2,15 +2,18 @@ pragma solidity ^0.5;
 
 import "../EternalStorageWrapperBase.sol";
 import "../interfaces/IEternalStorageBoolArray.sol";
+import "../libraries/SafeMath.sol";
 
 contract EternalStorageBoolArray is IEternalStorageBoolArray, EternalStorageWrapperBase {
+
+    using SafeMath for uint256;
 
     function pushBoolToArray(bytes32 module, bytes32 array, bool newValue)
         external
         returns (bool)
     {
-        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)) + 1);
-        return _setBoolInArray(module, array, _getNumberOfElementsInArray(module, array) - 1, newValue);
+        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)).add(1));
+        return _setBoolInArray(module, array, _getNumberOfElementsInArray(module, array).sub(1), newValue);
     }
 
     function getBoolFromArray(bytes32 module, bytes32 array, uint256 element)
@@ -29,12 +32,14 @@ contract EternalStorageBoolArray is IEternalStorageBoolArray, EternalStorageWrap
 
     function deleteBoolFromArray(bytes32 module, bytes32 array, uint256 element)
         external
-        returns (bool)
+       returns (bool)
     {
-        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
-        _setBoolInArray(module, array, element, _getBoolFromArray(module, array, _getNumberOfElementsInArray(module, array) - 1));
-        bytes32 key = indexedElementKey(module, array, _getNumberOfElementsInArray(module, array) - 1);
-        return deleteBool(key);
+        uint256 manyElements = _getNumberOfElementsInArray(module, array);
+        require(element < manyElements, OUT_OF_BOUNDS);
+        _setBoolInArray(module, array, element, _getBoolFromArray(module, array, manyElements.sub(1)));
+        bytes32 keyToDelete = indexedElementKey(module, array, manyElements.sub(1));
+        setUint(singleElementKey(module, array), manyElements.sub(1));
+        return deleteBool(keyToDelete);
     }
 
     // Private functions

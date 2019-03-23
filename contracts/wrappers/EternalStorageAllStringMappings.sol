@@ -6,7 +6,7 @@ import "../interfaces/IEternalStorageAllStringMappings.sol";
 contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, EternalStorageWrapperBase {
 
     // Get element:
-    function getUintFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getUintFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (uint)
     {
@@ -14,7 +14,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return getUint(key);
     }
 
-    function getIntFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getIntFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (int)
     {
@@ -22,7 +22,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return getInt(key);
     }
 
-    function getAddressFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getAddressFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (address)
     {
@@ -30,7 +30,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return getAddress(key);
     }
 
-    function getBytesFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getBytesFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (bytes memory)
     {
@@ -38,7 +38,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return getBytes(key);
     }
 
-    function getBoolFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getBoolFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (bool)
     {
@@ -46,7 +46,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return getBool(key);
     }
 
-    function getStringFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function getStringFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external view
         returns (string memory)
     {
@@ -56,7 +56,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
 
 
     // Set element:
-    function setUintInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, uint256 _value)
+    function setUintInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, uint256 _value)
         external
         returns (bool)
     {
@@ -64,7 +64,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return setUint(key, _value);
     }
 
-    function setIntInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, int256 _value)
+    function setIntInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, int256 _value)
         external
         returns (bool)
     {
@@ -72,7 +72,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return setInt(key, _value);
     }
 
-    function setAddressInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, address _value)
+    function setAddressInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, address _value)
         external
         returns (bool)
     {
@@ -80,7 +80,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return setAddress(key, _value);
     }
 
-    function setBytesInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, bytes calldata _value)
+    function setBytesInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, bytes calldata _value)
         external
         returns (bool)
     {
@@ -88,7 +88,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return setBytes(key, _value);
     }
 
-    function setBoolInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, bool _value)
+    function setBoolInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, bool _value)
         external
         returns (bool)
     {
@@ -96,7 +96,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return setBool(key, _value);
     }
 
-    function setStringInMapping(bytes32 _module, bytes32 _mapping, string calldata _key, string calldata _value)
+    function setStringInStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key, string calldata _value)
         external
         returns (bool)
     {
@@ -106,7 +106,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
 
 
     // Delete element:
-    function deleteUintFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function deleteUintFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external
         returns (bool)
     {
@@ -114,7 +114,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return deleteUint(key);
     }
 
-    function deleteIntFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function deleteIntFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external
         returns (bool)
     {
@@ -122,7 +122,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return deleteInt(key);
     }
 
-    function deleteAddressFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function deleteAddressFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external
         returns (bool)
     {
@@ -130,7 +130,15 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return deleteAddress(key);
     }
 
-    function deleteBoolFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function deleteBytesFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+        external
+        returns (bool)
+    {
+        bytes32 key = indexedElementKey(_module, _mapping, _key);
+        return deleteBytes(key);
+    }
+
+    function deleteBoolFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external
         returns (bool)
     {
@@ -138,7 +146,7 @@ contract EternalStorageAllStringMappings is IEternalStorageAllStringMappings, Et
         return deleteBool(key);
     }
 
-    function deleteStringFromMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
+    function deleteStringFromStringMapping(bytes32 _module, bytes32 _mapping, string calldata _key)
         external
         returns (bool)
     {

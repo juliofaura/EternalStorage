@@ -2,15 +2,18 @@ pragma solidity ^0.5;
 
 import "../EternalStorageWrapperBase.sol";
 import "../interfaces/IEternalStorageUintArray.sol";
+import "../libraries/SafeMath.sol";
 
 contract EternalStorageUintArray is IEternalStorageUintArray, EternalStorageWrapperBase {
+
+    using SafeMath for uint256;
 
     function pushUintToArray(bytes32 module, bytes32 array, uint256 newValue)
         external
         returns (bool)
     {
-        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)) + 1);
-        return _setUintInArray(module, array, _getNumberOfElementsInArray(module, array) - 1, newValue);
+        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)).add(1));
+        return _setUintInArray(module, array, _getNumberOfElementsInArray(module, array).sub(1), newValue);
     }
 
     function getUintFromArray(bytes32 module, bytes32 array, uint256 element)
@@ -31,10 +34,12 @@ contract EternalStorageUintArray is IEternalStorageUintArray, EternalStorageWrap
         external
        returns (bool)
     {
-        require(element < _getNumberOfElementsInArray(module, array), OUT_OF_BOUNDS);
-        _setUintInArray(module, array, element, _getUintFromArray(module, array, _getNumberOfElementsInArray(module, array) - 1));
-        bytes32 key = indexedElementKey(module, array, _getNumberOfElementsInArray(module, array) - 1);
-        return deleteUint(key);
+        uint256 manyElements = _getNumberOfElementsInArray(module, array);
+        require(element < manyElements, OUT_OF_BOUNDS);
+        _setUintInArray(module, array, element, _getUintFromArray(module, array, manyElements.sub(1)));
+        bytes32 keyToDelete = indexedElementKey(module, array, manyElements.sub(1));
+        setUint(singleElementKey(module, array), manyElements.sub(1));
+        return deleteUint(keyToDelete);
     }
 
     // Private functions

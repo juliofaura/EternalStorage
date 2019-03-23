@@ -19,41 +19,41 @@ contract EternalStorageWrapperBase is EternalStorageBase {
     }
 
     function indexedElementKey(bytes32 module, bytes32 variableName, uint256 index) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, index));
+        return keccak256(abi.encodePacked(module, variableName, "uint", index));
     }
 
     function indexedElementKey(bytes32 module, bytes32 variableName, address _key) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, _key));
+        return keccak256(abi.encodePacked(module, variableName, "address", _key));
     }
 
     function indexedElementKey(bytes32 module, bytes32 variableName, string memory _key) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, _key));
+        return keccak256(abi.encodePacked(module, variableName, "string", _key));
     }
 
     function doubleIndexedElementKey(bytes32 module, bytes32 variableName, bytes32 _key1, address _key2) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
+        return keccak256(abi.encodePacked(module, variableName, "bytes32", _key1, "address", _key2));
     }
 
     function doubleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, address _key2) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
+        return keccak256(abi.encodePacked(module, variableName, "address", _key1, "address", _key2));
     }
 
     function doubleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, string memory _key2) internal pure returns (bytes32) {
-        return keccak256(abi.encodePacked(module, variableName, _key1, _key2));
+        return keccak256(abi.encodePacked(module, variableName, "address", _key1, "string", _key2));
     }
 
     function tripleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, bytes32 _key2, uint256 _key3)
         internal pure
         returns (bytes32)
     {
-        return keccak256(abi.encodePacked(module, variableName, _key1, _key2, _key3));
+        return keccak256(abi.encodePacked(module, variableName, "address", _key1, "bytes32", _key2, "uint", _key3));
     }
 
     function tripleIndexedElementKey(bytes32 module, bytes32 variableName, bytes32 _key1, address _key2, address _key3)
         internal pure
         returns (bytes32)
     {
-        return keccak256(abi.encodePacked(module, variableName, _key1, _key2, _key3));
+        return keccak256(abi.encodePacked(module, variableName, "bytes32", _key1, "address", _key2, "address", _key3));
     }
 
     // Array helper

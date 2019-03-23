@@ -30,6 +30,8 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
 
     event ContractConnected(address indexed whichContract);
     event ContractDisconnected(address indexed whichContract);
+    event ContractConnectedByOwner(address indexed whichContract);
+    event ContractDisconnectedByOwner(address indexed whichContract);
     event ApprovalToConnectGranted(address indexed who);
     event ApprovalToConnectRevoked(address indexed who);
 
@@ -123,9 +125,9 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * @notice Allows the owner to whitlist ("connect") a contract to be able to write the eternal storage
      * @param whichContract The address of the contract that gets connected
      */
-    function connectContract(address whichContract) external onlyOwner returns (bool) {
+    function connectContractByOwner(address whichContract) external onlyOwner returns (bool) {
         _connectedContracts[whichContract] = true;
-        emit ContractConnected(whichContract);
+        emit ContractConnectedByOwner(whichContract);
         return true;
     }
 
@@ -134,9 +136,9 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * @dev Only the owner can disconnect a contract from the eternal storage
      * @param whichContract The address of the contract that gets disconnected
      */
-    function disconnectContract(address whichContract) external onlyOwner returns (bool) {
+    function disconnectContractByOwner(address whichContract) external onlyOwner returns (bool) {
         _connectedContracts[whichContract] = false;
-        emit ContractDisconnected(whichContract);
+        emit ContractDisconnectedByOwner(whichContract);
         return true;
     }
 

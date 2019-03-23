@@ -8,7 +8,7 @@ interface IEternalStorageBase {
     function isApprovedToConnect(address who) external view returns (bool);
     function connectContract() external returns (bool); //only approvedToConnect
     function disconnectContract() external returns (bool); // only connected contract
-    function connectContract(address whichContract) external returns (bool); // only owner
-    function disconnectContract(address whichContract) external returns (bool); // only owner
+    function connectContractByOwner(address whichContract) external returns (bool); // only owner
+    function disconnectContractByOwner(address whichContract) external returns (bool); // only owner
 
 }

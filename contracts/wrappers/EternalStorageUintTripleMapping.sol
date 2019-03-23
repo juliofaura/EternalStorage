@@ -6,7 +6,7 @@ import "../interfaces/IEternalStorageUintTripleMapping.sol";
 contract EternalStorageUintTripleMapping is IEternalStorageUintTripleMapping, EternalStorageWrapperBase {
 
     // Get element:
-    function getUintFromTripleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3)
+    function getUintFromTripleBytes32AddressAddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3)
         external view
         returns (uint256)
     {
@@ -16,7 +16,7 @@ contract EternalStorageUintTripleMapping is IEternalStorageUintTripleMapping, Et
 
     // Set element:
 
-    function setUintInTripleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3, uint256 _value)
+    function setUintInTripleBytes32AddressAddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3, uint256 _value)
         external
         returns (bool)
     {
@@ -26,7 +26,7 @@ contract EternalStorageUintTripleMapping is IEternalStorageUintTripleMapping, Et
 
     // Delete element
 
-    function deleteUintFromTripleMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3)
+    function deleteUintFromTripleBytes32AddressAddressMapping(bytes32 _module, bytes32 _mapping, bytes32 _key1, address _key2, address _key3)
         external
         returns (bool)
     {
