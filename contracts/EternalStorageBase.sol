@@ -26,15 +26,6 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
     mapping(address => mapping(bytes32 => bool)) private _boolStorage;
     mapping(address => mapping(bytes32 => string)) private _stringStorage;
 
-    // Events
-
-    event ContractConnected(address indexed whichContract);
-    event ContractDisconnected(address indexed whichContract);
-    event ContractConnectedByOwner(address indexed whichContract);
-    event ContractDisconnectedByOwner(address indexed whichContract);
-    event ApprovalToConnectGranted(address indexed who);
-    event ApprovalToConnectRevoked(address indexed who);
-
     // Modifiers
 
     /**

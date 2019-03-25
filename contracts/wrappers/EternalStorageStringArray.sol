@@ -1,6 +1,6 @@
 pragma solidity ^0.5;
 
-import "../EternalStorageWrapperBase.sol";
+import "./EternalStorageWrapperBase.sol";
 import "../interfaces/IEternalStorageStringArray.sol";
 import "../libraries/SafeMath.sol";
 
