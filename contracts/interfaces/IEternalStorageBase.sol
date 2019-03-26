@@ -13,9 +13,9 @@ interface IEternalStorageBase {
     function approveToConnect(address who) external returns (bool); // only owner
     function revokeApprovalToConnect(address who) external returns (bool); // only owner
     function isApprovedToConnect(address who) external view returns (bool);
-    function connectContract() external returns (bool); //only approvedToConnect
-    function disconnectContract() external returns (bool); // only connected contract
-    function connectContractByOwner(address whichContract) external returns (bool); // only owner
-    function disconnectContractByOwner(address whichContract) external returns (bool); // only owner
+    function connect() external returns (bool); //only approvedToConnect
+    function disconnect() external returns (bool); // only connected contract
+    function connectContract(address whichContract) external returns (bool); // only owner
+    function disconnectContract(address whichContract) external returns (bool); // only owner
 
 }

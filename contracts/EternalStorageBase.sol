@@ -19,12 +19,12 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
     mapping (address => bool) private _connectedContracts;
     mapping (address => bool) private _approvedToConnect;
 
-    mapping(address => mapping(bytes32 => uint256)) private _uIntStorage;
-    mapping(address => mapping(bytes32 => int256)) private _intStorage;
-    mapping(address => mapping(bytes32 => address)) private _addressStorage;
-    mapping(address => mapping(bytes32 => bytes)) private _bytesStorage;
-    mapping(address => mapping(bytes32 => bool)) private _boolStorage;
-    mapping(address => mapping(bytes32 => string)) private _stringStorage;
+    mapping(bytes32 => uint256) private _uIntStorage;
+    mapping(bytes32 => int256 ) private _intStorage;
+    mapping(bytes32 => address) private _addressStorage;
+    mapping(bytes32 => bytes  ) private _bytesStorage;
+    mapping(bytes32 => bool   ) private _boolStorage;
+    mapping(bytes32 => string ) private _stringStorage;
 
     // Modifiers
 
@@ -47,6 +47,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
     // Constructor
     constructor() public {
         _approveToConnect(msg.sender);
+        if(msg.sender != tx.origin) _approveToConnect(tx.origin);
     }
 
     // Interface functions (all external)
@@ -94,7 +95,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * will be checking whether either msg.sender or tx.origin are approved)
      * @dev (typically the owner of the contract to connect and the owner of the eternal storage are the same)
      */
-    function connectContract() external onlyApprovedToConnect returns (bool) {
+    function connect() external onlyApprovedToConnect returns (bool) {
         _connectedContracts[msg.sender] = true;
         _approvedToConnect[msg.sender] = true; // So the contract can connect other contracts
         emit ContractConnected(msg.sender);
@@ -105,7 +106,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * @notice Allows a connected contract to disconnect from the eternal storage
      * @dev Again, this should be called only from a previously connected contract
      */
-    function disconnectContract() external returns (bool) {
+    function disconnect() external returns (bool) {
         require(_connectedContracts[msg.sender], "Contract is not connected");
         _connectedContracts[msg.sender] = false;
         emit ContractDisconnected(msg.sender);
@@ -116,7 +117,13 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * @notice Allows the owner to whitlist ("connect") a contract to be able to write the eternal storage
      * @param whichContract The address of the contract that gets connected
      */
-    function connectContractByOwner(address whichContract) external onlyOwner returns (bool) {
+    function connectContract(address whichContract) external returns (bool) {
+        require(
+            msg.sender == owner() ||
+            _approvedToConnect[msg.sender] ||
+            _approvedToConnect[tx.origin],
+            "Not authorized to connect a contract"
+        );
         _connectedContracts[whichContract] = true;
         emit ContractConnectedByOwner(whichContract);
         return true;
@@ -127,7 +134,8 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      * @dev Only the owner can disconnect a contract from the eternal storage
      * @param whichContract The address of the contract that gets disconnected
      */
-    function disconnectContractByOwner(address whichContract) external onlyOwner returns (bool) {
+    function disconnectContract(address whichContract) external returns (bool) {
+        require(msg.sender == owner() || _approvedToConnect[msg.sender] || _approvedToConnect[tx.origin], "Not authorized to connect a contract");
         _connectedContracts[whichContract] = false;
         emit ContractDisconnectedByOwner(whichContract);
         return true;
@@ -141,7 +149,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getUint(bytes32 _key) internal view returns(uint256) {
         onlyConnectedContract();
-        return _uIntStorage[tx.origin][_key];
+        return _uIntStorage[_key];
     }
 
     /**
@@ -150,7 +158,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setUint(bytes32 _key, uint _value) internal returns (bool) {
         onlyConnectedContract();
-        _uIntStorage[tx.origin][_key] = _value;
+        _uIntStorage[_key] = _value;
         return true;
     }
 
@@ -160,7 +168,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteUint(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _uIntStorage[tx.origin][_key];
+        delete _uIntStorage[_key];
         return true;
     }
 
@@ -172,7 +180,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getInt(bytes32 _key) internal view returns(int256) {
         onlyConnectedContract();
-        return _intStorage[tx.origin][_key];
+        return _intStorage[_key];
     }
 
     /**
@@ -181,7 +189,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setInt(bytes32 _key, int256 _value) internal returns (bool) {
         onlyConnectedContract();
-        _intStorage[tx.origin][_key] = _value;
+        _intStorage[_key] = _value;
         return true;
     }
 
@@ -191,7 +199,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteInt(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _intStorage[tx.origin][_key];
+        delete _intStorage[_key];
         return true;
     }
 
@@ -203,7 +211,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getAddress(bytes32 _key) internal view returns(address) {
         onlyConnectedContract();
-        return _addressStorage[tx.origin][_key];
+        return _addressStorage[_key];
     }
 
     /**
@@ -212,7 +220,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setAddress(bytes32 _key, address _value) internal returns (bool) {
         onlyConnectedContract();
-        _addressStorage[tx.origin][_key] = _value;
+        _addressStorage[_key] = _value;
         return true;
     }
 
@@ -222,7 +230,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteAddress(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _addressStorage[tx.origin][_key];
+        delete _addressStorage[_key];
         return true;
     }
 
@@ -234,7 +242,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getBytes(bytes32 _key) internal view returns(bytes memory) {
         onlyConnectedContract();
-        return _bytesStorage[tx.origin][_key];
+        return _bytesStorage[_key];
     }
 
     /**
@@ -243,7 +251,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setBytes(bytes32 _key, bytes memory _value) internal returns (bool) {
         onlyConnectedContract();
-        _bytesStorage[tx.origin][_key] = _value;
+        _bytesStorage[_key] = _value;
         return true;
     }
 
@@ -253,7 +261,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteBytes(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _bytesStorage[tx.origin][_key];
+        delete _bytesStorage[_key];
         return true;
     }
 
@@ -265,7 +273,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getBool(bytes32 _key) internal view returns(bool) {
         onlyConnectedContract();
-        return _boolStorage[tx.origin][_key];
+        return _boolStorage[_key];
     }
 
     /**
@@ -274,7 +282,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setBool(bytes32 _key, bool _value) internal returns (bool) {
         onlyConnectedContract();
-        _boolStorage[tx.origin][_key] = _value;
+        _boolStorage[_key] = _value;
         return true;
     }
 
@@ -284,7 +292,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteBool(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _boolStorage[tx.origin][_key];
+        delete _boolStorage[_key];
         return true;
     }
 
@@ -296,7 +304,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function getString(bytes32 _key) internal view returns(string memory) {
         onlyConnectedContract();
-        return _stringStorage[tx.origin][_key];
+        return _stringStorage[_key];
     }
 
     /**
@@ -305,7 +313,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function setString(bytes32 _key, string memory _value) internal returns (bool) {
         onlyConnectedContract();
-        _stringStorage[tx.origin][_key] = _value;
+        _stringStorage[_key] = _value;
         return true;
     }
 
@@ -315,7 +323,7 @@ contract EternalStorageBase is IEternalStorageBase, Pausable {
      */
     function deleteString(bytes32 _key) internal returns (bool) {
         onlyConnectedContract();
-        delete _stringStorage[tx.origin][_key];
+        delete _stringStorage[_key];
         return true;
     }
 

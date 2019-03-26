@@ -2,6 +2,7 @@ pragma solidity ^0.5;
 
 import "./EternalStorage.sol";
 import "./Ownable.sol";
+import "./interfaces/IEternalStorageBase.sol";
 
 /**
  * @title EternalStorageConnectort
@@ -20,7 +21,7 @@ import "./Ownable.sol";
  */
 contract EternalStorageConnector is Ownable {
 
-    EternalStorage internal _eternalStorage;
+    EternalStorage private _eternalStorage;
 
     event EternalStorageSet(address oldEternalStorage, address newEternalStorage);
 
@@ -30,7 +31,7 @@ contract EternalStorageConnector is Ownable {
     }
 
     function isEternalStorageSet() public view returns(bool) {
-        return _eternalStorage.isContractConnected(address(this));
+        return IEternalStorageBase(_eternalStorage).isContractConnected(address(this));
     }
 
     function whichEternalStorage() public view returns(EternalStorage) {
@@ -41,7 +42,7 @@ contract EternalStorageConnector is Ownable {
         require(newEternalStorage != address(0), "Storage address cannot be zero");
         emit EternalStorageSet(address(_eternalStorage), newEternalStorage);
         _eternalStorage = EternalStorage(newEternalStorage);
-        _eternalStorage.connectContract();
+        IEternalStorageBase(_eternalStorage).connect();
         return true;
     }
 
