@@ -35,6 +35,10 @@ contract EternalStorageWrapperBase is IEternalStorageWrapperBase, EternalStorage
         return keccak256(abi.encodePacked(module, variableName, "bytes32", _key1, "address", _key2));
     }
 
+    function doubleIndexedElementKey(bytes32 module, bytes32 variableName, string memory _key1, address _key2) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked(module, variableName, "string", _key1, "address", _key2));
+    }
+
     function doubleIndexedElementKey(bytes32 module, bytes32 variableName, address _key1, address _key2) internal pure returns (bytes32) {
         return keccak256(abi.encodePacked(module, variableName, "address", _key1, "address", _key2));
     }

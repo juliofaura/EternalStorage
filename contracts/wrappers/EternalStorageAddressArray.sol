@@ -10,10 +10,11 @@ contract EternalStorageAddressArray is IEternalStorageAddressArray, EternalStora
 
     function pushAddressToArray(bytes32 module, bytes32 array, address newValue)
         external
-        returns (bool)
+        returns (uint256 index)
     {
-        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)).add(1));
-        return _setAddressInArray(module, array, _getNumberOfElementsInArray(module, array).sub(1), newValue);
+        index = getUint(singleElementKey(module, array));
+        setUint(singleElementKey(module, array), index.add(1));
+        _setAddressInArray(module, array, index, newValue);
     }
 
     function getAddressFromArray(bytes32 module, bytes32 array, uint256 element)

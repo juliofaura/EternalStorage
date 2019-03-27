@@ -10,10 +10,11 @@ contract EternalStorageBoolArray is IEternalStorageBoolArray, EternalStorageWrap
 
     function pushBoolToArray(bytes32 module, bytes32 array, bool newValue)
         external
-        returns (bool)
+        returns (uint256 index)
     {
-        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)).add(1));
-        return _setBoolInArray(module, array, _getNumberOfElementsInArray(module, array).sub(1), newValue);
+        index = getUint(singleElementKey(module, array));
+        setUint(singleElementKey(module, array), index.add(1));
+        _setBoolInArray(module, array, index, newValue);
     }
 
     function getBoolFromArray(bytes32 module, bytes32 array, uint256 element)

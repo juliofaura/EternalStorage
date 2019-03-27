@@ -106,7 +106,7 @@ contract("EternalStorage", accounts => {
     // (Different way to assert reverts, now using the one below)
 
     it('Non approved contract should not be able to connect', async () => {
-        await truffleAssert.reverts(instance.connectContract({from:sendingContract}), "", "Was able to connect");
+        await truffleAssert.reverts(instance.connect({from:sendingContract}), "", "Was able to connect");
     })
 
     it('Non approved address should not be able to approve a contract to connect', async () => {
@@ -130,7 +130,7 @@ contract("EternalStorage", accounts => {
     });
 
     it("Approved contract should be able to connect", done => {
-        instance.connectContract({from:sendingContract}).then(_tx => {
+        instance.connect({from:sendingContract}).then(_tx => {
             var event = _tx.logs[0];
             assert.equal(event.event, "ContractConnected", "ContractConnected event not issued");
             assert.equal(event.args.whichContract, sendingContract, "Incorrect argument in ContractConnected event");
@@ -142,7 +142,7 @@ contract("EternalStorage", accounts => {
     });
 
     it("Owner should be able to directly connect a contract", done => {
-        instance.connectContractByOwner(anotherSendingContract, {from:ownerAccount}).then(_tx => {
+        instance.connectContract(anotherSendingContract, {from:ownerAccount}).then(_tx => {
             var event = _tx.logs[0];
             assert.equal(event.event, "ContractConnectedByOwner", "ContractConnected event not issued");
             assert.equal(event.args.whichContract, anotherSendingContract, "Incorrect argument in ContractConnected event");
@@ -182,12 +182,6 @@ contract("EternalStorage", accounts => {
 
     it("Connected contract should be able to store another uint on another module and the same variable", done => {
         instance.setUint(MODULE2, SIMPLE_VARIABLE1, UINT_VALUE3, {from:sendingContract}).then(_result => {
-        })    
-        .then(done).catch(done);
-    });    
-
-    it("Another connected contract should be able to store an uint with the same module and variable name", done => {
-        instance.setUint(MODULE1, SIMPLE_VARIABLE1, UINT_VALUE2, {from:anotherSendingContract}).then(_result => {
         })    
         .then(done).catch(done);
     });    
@@ -271,13 +265,6 @@ contract("EternalStorage", accounts => {
     it("Uint values should be correctly stored (3)", done => {
         instance.getUint.call(MODULE2, SIMPLE_VARIABLE1, {from:sendingContract}).then(_value => {
             assert.equal(_value, UINT_VALUE3, "Uint value not correctly stored");
-        })
-        .then(done).catch(done);
-    });
-
-    it("Uint values should be correctly stored (4)", done => {
-        instance.getUint.call(MODULE1, SIMPLE_VARIABLE1, {from:anotherSendingContract}).then(_value => {
-            assert.equal(_value, UINT_VALUE2, "Uint value not correctly stored");
         })
         .then(done).catch(done);
     });
@@ -1287,13 +1274,6 @@ contract("EternalStorage", accounts => {
     it("Uint values should be correctly stored (3)", done => {
         instance.getUint.call(MODULE2, SIMPLE_VARIABLE1, {from:sendingContract}).then(_value => {
             assert.equal(_value, UINT_VALUE3, "Uint value not correctly stored");
-        })
-        .then(done).catch(done);
-    });
-
-    it("Uint values should be correctly stored (4)", done => {
-        instance.getUint.call(MODULE1, SIMPLE_VARIABLE1, {from:anotherSendingContract}).then(_value => {
-            assert.equal(_value, UINT_VALUE2, "Uint value not correctly stored");
         })
         .then(done).catch(done);
     });

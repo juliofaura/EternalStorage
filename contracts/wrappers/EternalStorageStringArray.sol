@@ -10,10 +10,11 @@ contract EternalStorageStringArray is IEternalStorageStringArray, EternalStorage
 
     function pushStringToArray(bytes32 module, bytes32 array, string calldata newValue)
         external
-        returns (bool)
+        returns (uint256 index)
     {
-        setUint(singleElementKey(module, array), getUint(singleElementKey(module, array)).add(1));
-        return _setStringInArray(module, array, _getNumberOfElementsInArray(module, array).sub(1), newValue);
+        index = getUint(singleElementKey(module, array));
+        setUint(singleElementKey(module, array), index.add(1));
+        _setStringInArray(module, array, index, newValue);
     }
 
     function getStringFromArray(bytes32 module, bytes32 array, uint256 element)
