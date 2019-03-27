@@ -69,6 +69,13 @@ contract EternalStorageWrapperBase is IEternalStorageWrapperBase, EternalStorage
         return getUint(key);
     }
 
+    function _setNumberOfElementsInArray(bytes32 module, bytes32 array, uint256 many)
+        internal
+        returns (bool) {
+        bytes32 key = singleElementKey(module, array);
+        return setUint(key, many);
+    }
+
     // uint256
 
     function getUint(bytes32 module, bytes32 variable)

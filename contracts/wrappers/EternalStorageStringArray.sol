@@ -12,8 +12,8 @@ contract EternalStorageStringArray is IEternalStorageStringArray, EternalStorage
         external
         returns (uint256 index)
     {
-        index = getUint(singleElementKey(module, array));
-        setUint(singleElementKey(module, array), index.add(1));
+        index = _getNumberOfElementsInArray(module, array);
+        _setNumberOfElementsInArray(module, array, index + 1);
         _setStringInArray(module, array, index, newValue);
     }
 
