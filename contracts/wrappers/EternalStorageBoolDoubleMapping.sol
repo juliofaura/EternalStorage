@@ -14,7 +14,7 @@ contract EternalStorageBoolDoubleMapping is IEternalStorageBoolDoubleMapping, Et
         return getBool(key);
     }
 
-    function getBoolFromDoubleStringAddressMapping(bytes32 _module, bytes32 _mapping, string calldata _key1, address _key2)
+    function getBoolFromDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
         external view
         returns (bool)
     {
@@ -40,7 +40,7 @@ contract EternalStorageBoolDoubleMapping is IEternalStorageBoolDoubleMapping, Et
         return setBool(key, _value);
     }
 
-    function setBoolInDoubleStringAddressMapping(bytes32 _module, bytes32 _mapping, string calldata _key1, address _key2, bool _value)
+    function setBoolInDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2, bool _value)
         external
         returns (bool)
     {
@@ -66,7 +66,7 @@ contract EternalStorageBoolDoubleMapping is IEternalStorageBoolDoubleMapping, Et
         return deleteBool(key);
     }
 
-    function deleteBoolFromDoubleStringAddressMapping(bytes32 _module, bytes32 _mapping, string calldata _key1, address _key2)
+    function deleteBoolFromDoubleAddressStringMapping(bytes32 _module, bytes32 _mapping, address _key1, string calldata _key2)
         external
         returns (bool)
     {
@@ -81,4 +81,5 @@ contract EternalStorageBoolDoubleMapping is IEternalStorageBoolDoubleMapping, Et
         bytes32 key = doubleIndexedElementKey(_module, _mapping, _key1, _key2);
         return deleteBool(key);
     }
+
 }
